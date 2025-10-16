@@ -1,0 +1,92 @@
+workers = []
+
+def load_data():
+    try:
+        with open("workers.txt", "r") as f:
+            for line in f:
+                data = line.strip().split(",")
+                if len(data) == 4:
+                    workers.append({
+                        "id": data[0],
+                        "name": data[1],
+                        "role": data[2],
+                        "trained": data[3]
+                    })
+    except FileNotFoundError:
+        pass
+
+def save_data():
+    with open("workers.txt", "w") as f:
+        for w in workers:
+            f.write(f"{w['id']},{w['name']},{w['role']},{w['trained']}\n")
+
+def add_worker():
+    wid = input("Enter Worker ID: ")
+    name = input("Enter Name: ")
+    role = input("Enter Role (e.g., Miner, Supervisor): ")
+    trained = input("Safety Trained? (Yes/No): ")
+    workers.append({"id": wid, "name": name, "role": role, "trained": trained})
+    print("✅ Worker added successfully!")
+
+def view_workers():
+    if not workers:
+        print("No worker data available.")
+        return
+    print("\n--- Worker List ---")
+    for w in workers:
+        print(f"ID: {w['id']} | Name: {w['name']} | Role: {w['role']} | Trained: {w['trained']}")
+
+def search_worker():
+    wid = input("Enter Worker ID to search: ")
+    for w in workers:
+        if w["id"] == wid:
+            print(f"Found: {w['name']} ({w['role']}) - Trained: {w['trained']}")
+            return
+    print("Worker not found.")
+
+def update_training():
+    wid = input("Enter Worker ID to update: ")
+    for w in workers:
+        if w["id"] == wid:
+            new_status = input("Enter new training status (Yes/No): ")
+            w["trained"] = new_status
+            print("✅ Training status updated!")
+            return
+    print("Worker not found.")
+
+def delete_worker():
+    wid = input("Enter Worker ID to delete: ")
+    for w in workers:
+        if w["id"] == wid:
+            workers.remove(w)
+            print("🗑 Worker deleted successfully!")
+            return
+    print("Worker not found.")
+
+load_data()
+while True:
+    print("\n==== Mine Worker Safety Management System ====")
+    print("1. Add Worker")
+    print("2. View Workers")
+    print("3. Search Worker")
+    print("4. Update Training Status")
+    print("5. Delete Worker")
+    print("6. Exit")
+    choice = input("Enter your choice (1-6): ")
+
+    if choice == "1":
+        add_worker()
+    elif choice == "2":
+        view_workers()
+    elif choice == "3":
+        search_worker()
+    elif choice == "4":
+        update_training()
+    elif choice == "5":
+        delete_worker()
+    elif choice == "6":
+        save_data()
+        print("Data saved. Exiting program. 👋")
+        break
+    else:
+        print("Invalid choice! Please try again.")
